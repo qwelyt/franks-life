@@ -1,0 +1,119 @@
+<html>
+  <head>
+    <style>
+      body{
+        background-color: #444;
+      }
+      .row div {
+        width: 5px;
+        height: 5px;
+        display: inline-block;
+        margin: 1px;
+      }
+
+      .row .active {
+        background-color: red;
+      }
+      .row .inactive {
+        background-color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <input id="cells" type="number" value="101"/>
+      <button onclick="go()">Start</button>
+    <div>
+    <div id="automata">
+      <div class="row"></div>
+    </div>
+
+
+    <script>
+      function activateOnRule(
+        target
+        , left
+        , self
+        , right
+        , rule
+        , ruleValue
+      ) {
+        let match =
+        state(left) === rule[0]
+        && state(self) === rule[1]
+        && state(right) === rule[2]
+
+        if(match) setState(target, ruleValue)
+      }
+
+      function state(cell){
+        return cell.classList.contains('active') ? 1 : 0
+      }
+
+      function setState(target, value){
+        target.classList.remove(target.classList);
+        if(value){
+          target.classList.add('active')
+        } else {
+          target.classList.add('inactive')
+        }
+      }
+
+      function rand() {
+        return Math.floor(
+          Math.random() * (2)
+        )
+      }
+      function firstRow(cells){
+        for(let i=0; i < cells; ++i){
+          let div = document.createElement('div')
+          div.classList.add(rand() ? 'active' : 'inactive')
+          document.querySelector('.row').appendChild(div)
+        }
+      }
+
+      function nextGeneration() {
+        let allRows = document.querySelectorAll('.row')
+        let last = allRows[allRows.length - 1]
+        let next = last.cloneNode(true)
+        document
+          .querySelector('#automata')
+          .appendChild(next)
+
+        process(next, last)
+      }
+
+      function process(next, last) {
+        for(let i = 0; i<next.childNodes.length; ++i){
+          let target = next.childNodes[i]
+          let prevSelf = last.childNodes[i]
+
+          let left = prevSelf.previousElementSibling
+              || last.childNodes[last.childNodes.length -1]
+
+          let right = prevSelf.nextElementSibling
+              || last.childNodes[0]
+
+          let toggleState = activateOnRule
+              .bind(null, target, left, prevSelf, right)
+
+          toggleState([1,1,1], true)
+          toggleState([1,1,0], false)
+          toggleState([1,0,1], false)
+          toggleState([1,0,0], true)
+          toggleState([0,1,1], false)
+          toggleState([0,1,0], false)
+          toggleState([0,0,1], true)
+          toggleState([0,0,0], false)
+        }
+      }
+      function go(){
+        console.log("RUN!")
+        let cells =  document.getElementById("cells").value
+        firstRow(cells)
+        setInterval(nextGeneration, 100 )
+      }
+
+    </script>
+  </body>
+</html>
