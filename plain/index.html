@@ -3,6 +3,7 @@
     <style>
       body{
         background-color: #444;
+        color: #ccc;
       }
       .row div {
         width: 5px;
@@ -11,12 +12,6 @@
         margin: 1px;
       }
 
-      .row .active {
-        background-color: red;
-      }
-      .row .inactive {
-        background-color: blue;
-      }
     </style>
   </head>
   <body>
@@ -31,6 +26,10 @@
         <span>[0,1,0] = <input type="checkbox" id="rule-6"></span>
         <span>[0,0,1] = <input type="checkbox" id="rule-7" checked></span>
         <span>[0,0,0] = <input type="checkbox" id="rule-8"></span>
+      </div>
+      <div>
+        <span>Active: <input type="color" id="activeColour" value="#ff0000">
+        <span>Inactive: <input type="color" id="inactiveColour" value="#0000ff">
       </div>
       <button onclick="go()">Start</button>
       <button onclick="stop()">Stop</button>
@@ -132,14 +131,27 @@
 
         ruleArray = [rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8]
       }
+      function colours() {
+        let styles = document.createElement('style')
+        styles.setAttribute("id", "dynamicStyles")
+
+
+        let inactive = document.getElementById("inactiveColour").value
+        let active = document.getElementById("activeColour").value
+
+        styles.innerHTML = ".row .active { background-color: "+active+";} .row .inactive { background-color:"+inactive+";}"
+
+        document.body.appendChild(styles)
+      }
 
 
       let intervalId
       function go(){
         reset()
+        rules()
+        colours()
         let cells =  document.getElementById("cells").value
         firstRow(cells)
-        rules()
 
         intervalId = setInterval(nextGeneration, 100 )
       }
@@ -154,6 +166,8 @@
         while(node.children[0]){
           node.removeChild(node.children[0])
         }
+        let styles = document.getElementById("dynamicStyles")
+        styles ? document.body.removeChild(styles) : ""
         let div = document.createElement('div')
         div.classList.add('row')
         node.appendChild(div)
