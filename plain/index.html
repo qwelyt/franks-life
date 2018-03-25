@@ -107,11 +107,23 @@
           toggleState([0,0,0], false)
         }
       }
+      let intervalId
       function go(){
-        console.log("RUN!")
+        reset()
         let cells =  document.getElementById("cells").value
         firstRow(cells)
-        setInterval(nextGeneration, 100 )
+        intervalId = setInterval(nextGeneration, 100 )
+      }
+
+      function reset(){
+        clearInterval(intervalId)
+        let node = document.getElementById("automata")
+        while(node.children[0]){
+          node.removeChild(node.children[0])
+        }
+        let div = document.createElement('div')
+        div.classList.add('row')
+        node.appendChild(div)
       }
 
     </script>
