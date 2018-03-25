@@ -20,9 +20,20 @@
     </style>
   </head>
   <body>
-    <div>
+    <div id="controls">
       <input id="cells" type="number" value="101"/>
+      <div id="rules">
+        <span>[1,1,1] = <input type="checkbox" id="rule-1" checked></span>
+        <span>[1,1,0] = <input type="checkbox" id="rule-2"></span>
+        <span>[1,0,1] = <input type="checkbox" id="rule-3"></span>
+        <span>[1,0,0] = <input type="checkbox" id="rule-4" checked></span>
+        <span>[0,1,1] = <input type="checkbox" id="rule-5"></span>
+        <span>[0,1,0] = <input type="checkbox" id="rule-6"></span>
+        <span>[0,0,1] = <input type="checkbox" id="rule-7" checked></span>
+        <span>[0,0,0] = <input type="checkbox" id="rule-8"></span>
+      </div>
       <button onclick="go()">Start</button>
+      <button onclick="stop()">Stop</button>
     <div>
     <div id="automata">
       <div class="row"></div>
@@ -97,26 +108,48 @@
           let toggleState = activateOnRule
               .bind(null, target, left, prevSelf, right)
 
-          toggleState([1,1,1], true)
-          toggleState([1,1,0], false)
-          toggleState([1,0,1], false)
-          toggleState([1,0,0], true)
-          toggleState([0,1,1], false)
-          toggleState([0,1,0], false)
-          toggleState([0,0,1], true)
-          toggleState([0,0,0], false)
+          toggleState([1,1,1], ruleArray[0])
+          toggleState([1,1,0], ruleArray[1])
+          toggleState([1,0,1], ruleArray[2])
+          toggleState([1,0,0], ruleArray[3])
+          toggleState([0,1,1], ruleArray[4])
+          toggleState([0,1,0], ruleArray[5])
+          toggleState([0,0,1], ruleArray[6])
+          toggleState([0,0,0], ruleArray[7])
         }
       }
+
+      let ruleArray
+      function rules(){
+        let rule1 = document.getElementById("rule-1").checked
+        let rule2 = document.getElementById("rule-2").checked
+        let rule3 = document.getElementById("rule-3").checked
+        let rule4 = document.getElementById("rule-4").checked
+        let rule5 = document.getElementById("rule-5").checked
+        let rule6 = document.getElementById("rule-6").checked
+        let rule7 = document.getElementById("rule-7").checked
+        let rule8 = document.getElementById("rule-8").checked
+
+        ruleArray = [rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8]
+      }
+
+
       let intervalId
       function go(){
         reset()
         let cells =  document.getElementById("cells").value
         firstRow(cells)
+        rules()
+
         intervalId = setInterval(nextGeneration, 100 )
       }
 
-      function reset(){
+      function stop(){
         clearInterval(intervalId)
+      }
+
+      function reset(){
+        stop()
         let node = document.getElementById("automata")
         while(node.children[0]){
           node.removeChild(node.children[0])
